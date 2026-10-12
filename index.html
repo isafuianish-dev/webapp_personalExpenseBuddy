@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Expense Buddy</title>
+<link rel="icon" type="image/png" href="media/favicon.png">
+<link rel="stylesheet" href="https://isafuianish-dev.github.io/webapp_cdnBuddy/css/tokens.css">
+<link rel="stylesheet" href="https://isafuianish-dev.github.io/webapp_cdnBuddy/css/base.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/theme-init.js" data-app="webapp_personalExpenseBuddy"></script>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="brand-icon" aria-hidden="true"><span class="icon" style="-webkit-mask-image:url(media/icon.svg);mask-image:url(media/icon.svg);"></span></span>
+      <h1>Personal Expense Buddy</h1>
+    </div>
+    <div class="topbar-actions">
+      <button id="btnSettings" class="btn btn-ghost btn-icon" title="Settings" aria-label="Settings"></button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel panel-budgets">
+      <div class="panel-header">
+        <input type="search" id="budgetSearch" placeholder="Search" class="search-input" aria-label="Search budgets">
+        <div class="panel-header-actions">
+          <button id="btnAddBudget" class="btn btn-primary">Add Budget</button>
+          <button id="btnExportData" class="btn btn-ghost btn-icon" title="Export all data as a JSON backup" aria-label="Export Data"></button>
+          <label class="btn btn-ghost btn-icon file-btn" title="Import a JSON backup" aria-label="Import Data">
+            <input type="file" id="fileImportData" accept="application/json">
+          </label>
+        </div>
+      </div>
+      <ul id="budgetList" class="budget-list"></ul>
+      <p class="empty-hint sidebar-sample-hint" id="sidebarLoadSampleHint" hidden>No budgets yet. <a href="#" id="linkLoadSampleSidebar" class="link-accent">Load sample</a>.</p>
+    </aside>
+
+    <main class="panel-main" id="budgetDetail">
+      <div class="empty-state" id="emptyState"></div>
+
+      <div class="budget-card" id="budgetDetailContent" hidden>
+        <section class="budget-header" id="budgetHeader"></section>
+
+        <div class="panel-detail" id="budgetScrollArea">
+          <section class="content-section" id="chartsSection">
+            <div class="section-header">
+              <h2>Overview</h2>
+            </div>
+            <div id="budgetStats" class="budget-header-stats"></div>
+          </section>
+
+          <section class="content-section" id="limitsSection">
+            <div class="section-header">
+              <h2>Spending by Category</h2>
+              <div class="expense-controls">
+                <button id="btnManageLimits" class="btn btn-ghost btn-sm">Manage Limits</button>
+              </div>
+            </div>
+            <div id="categoryComposition" class="composition-strip"></div>
+            <div id="limitCards" class="limit-cards"></div>
+            <div id="limitAlerts" class="limit-alerts"></div>
+          </section>
+
+          <section class="content-section" id="membersSection">
+            <div class="section-header">
+              <h2>Members</h2>
+            </div>
+            <div id="membersList" class="members-list"></div>
+            <p id="membersEmpty" class="empty-hint" hidden>No members yet.</p>
+          </section>
+
+          <section class="content-section" id="expensesSection">
+            <div class="section-header">
+              <h2>Expenses</h2>
+              <div class="expense-controls">
+                <div id="filterCategory"></div>
+                <div id="filterMember"></div>
+                <div id="sortExpenses"></div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="expenses-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Paid By</th>
+                    <th>Payment</th>
+                    <th>Date</th>
+                    <th class="col-actions">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesBody"></tbody>
+              </table>
+            </div>
+            <p id="expensesEmpty" class="empty-hint" hidden>No expenses yet.</p>
+          </section>
+
+          <section class="content-section" id="exportSection">
+            <div class="section-header">
+              <h2>Export</h2>
+            </div>
+            <div class="export-buttons">
+              <button id="btnExportSummaryCsv" class="btn btn-ghost">Budget Summary (CSV)</button>
+              <button id="btnExportExpensesCsv" class="btn btn-ghost">Expense List (CSV)</button>
+              <button id="btnExportLimitsCsv" class="btn btn-ghost">Budget vs Actual (CSV)</button>
+              <button id="btnExportPdf" class="btn btn-ghost">Print / Export PDF</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="section-nav" id="sectionNav" aria-label="Budget sections" hidden>
+    <button type="button" class="section-nav-item" data-target="chartsSection"></button>
+    <button type="button" class="section-nav-item" data-target="limitsSection"></button>
+    <button type="button" class="section-nav-item" data-target="membersSection"></button>
+    <button type="button" class="section-nav-item" data-target="expensesSection"></button>
+    <button type="button" class="section-nav-item" data-target="exportSection"></button>
+  </nav>
+</div>
+
+<div id="printArea" class="print-area"></div>
+
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/utils.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/icons.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/modal.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/theme.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/settings.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/markdown.js"></script>
+<script src="https://isafuianish-dev.github.io/webapp_cdnBuddy/js/manual.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
